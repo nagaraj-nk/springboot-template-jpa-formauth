@@ -21,14 +21,13 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
-                .csrf()
-                .disable()
                 .authorizeHttpRequests()
                 .anyRequest()
                 .authenticated()
                 .and()
-                .httpBasic();
-        // .authenticationEntryPoint(authenticationEntryPoint);
+                .formLogin(loginPage -> loginPage.loginPage("loginPage.html")
+                        .loginProcessingUrl("/login_process")
+                        .failureUrl("loginPage.html?error=true"));
         return httpSecurity.build();
     }
 
