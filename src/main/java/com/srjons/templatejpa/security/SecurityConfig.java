@@ -7,6 +7,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -22,12 +23,16 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
                 .authorizeHttpRequests()
+                .requestMatchers("/user_login", "/login_process", "/perform_logout")
+                .permitAll()
                 .anyRequest()
                 .authenticated()
                 .and()
-                .formLogin(loginPage -> loginPage.loginPage("loginPage.html")
+                .formLogin(configure -> configure.loginPage("/user_login")
                         .loginProcessingUrl("/login_process")
-                        .failureUrl("loginPage.html?error=true"));
+                        .permitAll()
+                        .defaultSuccessUrl("/login_success")
+                        .failureUrl("/login_failed"));
         return httpSecurity.build();
     }
 
@@ -42,7 +47,6 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/users");
     }
 
-
     @Bean
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
@@ -50,5 +54,4 @@ public class SecurityConfig {
         authenticationProvider.setPasswordEncoder(passwordEncoder());
         return authenticationProvider;
     }
-
 }

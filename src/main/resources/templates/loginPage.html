@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Login</title>
@@ -8,12 +8,18 @@
 
 <h3>Login</h3>
 
-<form action="login_process" method='POST'>
+<form th:action="@{/login_process}" method='POST'>
     <p>Username</p>
     <input type="text" name="username" id="username" /> <br>
     <p>Username</p>
     <input type="password" name="password" id="password" /> <br>
     <input type="submit" value="Login">
+    <div id="errors" th:if="${(param.error != null) and (param.error[0] == '')}">
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            Invalid credentials. Please try again.
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    </div>
 </form>
 
 </body>
